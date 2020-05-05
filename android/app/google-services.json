@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "763960520863",
+    "firebase_url": "https://viewnotion-cb736.firebaseio.com",
+    "project_id": "viewnotion-cb736",
+    "storage_bucket": "viewnotion-cb736.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763960520863:android:2d383cb1a1ef9779d2f2aa",
+        "android_client_info": {
+          "package_name": "com.viewnotion.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763960520863-t00ajogn491j0r3i7j0ij67m10ivb33s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.viewnotion.app",
+            "certificate_hash": "742c8e03978c97e250ac827f6b5dca2548c78d60"
+          }
+        },
+        {
+          "client_id": "763960520863-g96ddfrp79lke8alh4g7fp03d29rd2tr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYwMi71zXelchoPS-Tf5L_WBsw60xlJp0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763960520863-g96ddfrp79lke8alh4g7fp03d29rd2tr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
