@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:viewnotion/config/config.dart';
+import 'package:viewnotion/screen/signin_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +13,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: MainPage(),
       theme: ThemeData(
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
+        primaryColor: primaryColor,
       ),
     );
   }
@@ -25,6 +28,6 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return SignInScreen();
   }
 }
