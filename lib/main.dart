@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:viewnotion/config/config.dart';
+import 'package:viewnotion/screen/home_sceen.dart';
 import 'package:viewnotion/screen/signin_screen.dart';
 
 void main() {
@@ -26,8 +28,24 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
-    return SignInScreen();
+    return StreamBuilder(
+      stream: _auth.onAuthStateChanged,
+      builder: (ctx, AsyncSnapshot<FirebaseUser> snapshot) {
+        if (snapshot.hasData) {
+          FirebaseUser user = snapshot.data;
+          if (user != null) {
+            return HomeScreen();
+          } else {
+            return SignInScreen();
+          }
+        }
+
+        return SignInScreen();
+      },
+    );
   }
 }
