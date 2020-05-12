@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:viewnotion/screen/explore_screen.dart';
+import 'package:viewnotion/screen/favorites_screen.dart';
+import 'package:viewnotion/screen/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -7,12 +10,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedPageIndex = 0;
+  var _pages = [
+    ExplorePage(),
+    FavoritesScreen(),
+    ProfileScreen(),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("HomeScreen"),
-      ),
+      // appBar: AppBar(
+      //   title: Text("HomeScreen"),
+      // ),
+      body: _pages[_selectedPageIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
