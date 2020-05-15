@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:viewnotion/config/config.dart';
+import 'package:viewnotion/screen/wallpaper_view_screen.dart';
 
 class ExplorePage extends StatefulWidget {
   ExplorePage({Key key}) : super(key: key);
@@ -51,11 +52,24 @@ class _ExplorePageState extends State<ExplorePage> {
             // crossAxisSpacing: 20,
             //padding: EdgeInsets.symmetric(horizontal: 15),
             itemBuilder: (ctx, index) {
-              return CachedNetworkImage(
-                placeholder: (ctx, index) => Image(
-                  image: AssetImage("assets/images/loading-image.gif"),
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WallPaperViewScreen(images[index]),
+                    ),
+                  );
+                },
+                child: Hero(
+                  tag: images[index],
+                  child: CachedNetworkImage(
+                    placeholder: (ctx, index) => Image(
+                      image: AssetImage("assets/images/loading-image.gif"),
+                    ),
+                    imageUrl: images[index],
+                  ),
                 ),
-                imageUrl: images[index],
               );
             },
           ),
