@@ -39,90 +39,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return SingleChildScrollView(
       child: Container(
         width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 96.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: FadeInImage(
-                  width: 80,
-                  height: 80,
-                  image: NetworkImage("${_user.photoUrl}"),
-                  placeholder: AssetImage("assets/images/placeholder.png"),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                "${_user.displayName}",
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: RaisedButton(
-                onPressed: () {
-                  _auth.signOut();
-                },
-                child: Text("Sign out"),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.8),
-                      spreadRadius: 12,
-                      blurRadius: 1,
-                      offset: Offset(0, 3), // changes position of shadow
+        child: _user != null
+            ? Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 96.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: FadeInImage(
+                        width: 80,
+                        height: 80,
+                        image: NetworkImage("${_user.photoUrl}"),
+                        placeholder:
+                            AssetImage("assets/images/placeholder.png"),
+                      ),
                     ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("My Wallpapers"),
-                    Icon(
-                      Icons.add,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            StaggeredGridView.countBuilder(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: ScrollPhysics(),
-              staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-              itemCount: 6,
-              // mainAxisSpacing: 20,
-              // crossAxisSpacing: 20,
-              //padding: EdgeInsets.symmetric(horizontal: 15),
-              itemBuilder: (ctx, index) {
-                return Image(
-                  image: NetworkImage(
-                    images[index],
                   ),
-                );
-              },
-            ),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: FlatButton(
-                onPressed: () {},
-                child: Text('Load More'),
-              ),
-            ),
-          ],
-        ),
+                  Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      "${_user.displayName}",
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      onPressed: () {
+                        _auth.signOut();
+                      },
+                      child: Text("Sign out"),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.8),
+                            spreadRadius: 12,
+                            blurRadius: 1,
+                            offset: Offset(0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("My Wallpapers"),
+                          Icon(
+                            Icons.add,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  StaggeredGridView.countBuilder(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    physics: ScrollPhysics(),
+                    staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+                    itemCount: 6,
+                    // mainAxisSpacing: 20,
+                    // crossAxisSpacing: 20,
+                    //padding: EdgeInsets.symmetric(horizontal: 15),
+                    itemBuilder: (ctx, index) {
+                      return Image(
+                        image: NetworkImage(
+                          images[index],
+                        ),
+                      );
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: FlatButton(
+                      onPressed: () {},
+                      child: Text('Load More'),
+                    ),
+                  ),
+                ],
+              )
+            : LinearProgressIndicator(),
       ),
     );
   }
