@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:viewnotion/config/config.dart';
+import 'package:viewnotion/screen/add_wallpaper_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -71,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(32.0),
+                    padding: const EdgeInsets.all(25.0),
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
@@ -92,8 +93,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text("My Wallpapers"),
-                          Icon(
-                            Icons.add,
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddWallpaperScreen(),
+                                  fullscreenDialog: true,
+                                ),
+                              );
+                            },
+                            icon: Icon(Icons.add),
                           ),
                         ],
                       ),
