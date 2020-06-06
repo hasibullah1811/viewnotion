@@ -46,18 +46,53 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
                       ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(
+                    top: 12.0, bottom: 12, left: 8, right: 8),
                 child: Text("Click on the image above to upload your image"),
               ),
               SizedBox(
                 height: 20,
               ),
+              Container(
+                decoration: BoxDecoration(color: Colors.grey[800], boxShadow: [
+                  BoxShadow(color: Colors.black, spreadRadius: 1)
+                ]),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text("Objects in the Image"),
+                      Text("Confidence"),
+                    ],
+                  ),
+                ),
+              ),
               detectedLabel != null
                   ? Wrap(
                       spacing: 5,
                       children: detectedLabel.map((label) {
-                        return Chip(
-                          label: Text(label.text),
+                        return Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey[900],
+                              boxShadow: [
+                                BoxShadow(color: Colors.black, spreadRadius: 1)
+                              ]),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 12.0, right: 12.0, top: 4, bottom: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Chip(
+                                  label: Text(label.text),
+                                ),
+                                Container(
+                                  child: Text("${label.confidence}"),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
                       }).toList(),
                     )
@@ -75,11 +110,11 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
 
     List<ImageLabel> labels = await labeler.processImage(visionImage);
 
-    //Print out the labels
-    print('Objects in the image ------------ Confidence');
-    for (var label in labels) {
-      print("${label.text} ----------- [${label.confidence}]");
-    }
+    // //Print out the labels
+    // print('Objects in the image ------------ Confidence');
+    // for (var label in labels) {
+    //   print("${label.text} ----------- [${label.confidence}]");
+    // }
     setState(() {
       detectedLabel = labels;
       _image = image;
