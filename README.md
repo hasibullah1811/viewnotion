@@ -1,16 +1,39 @@
 # viewnotion
 
-A new Flutter project.
+Simple App to demonstrate the use of Mobile SDK ML KIT that brings Google's machine learning expertise to Android and iOS apps in a powerful yet easy-to-use package. Whether you're new or experienced in machine learning, you can implement the functionality you need in just a few lines of code.
 
-## Getting Started
+## Work in progress
 
-This project is a starting point for a Flutter application.
+The features :
+- ✔️ Image labeling
+- ⌛ Text recognition		
+- ⌛ Face detection		
+- ⌛ Barcode scanning				
+- ⌛ Object detection & tracking		
+- ⌛ Landmark recognition		
+- ⌛ Language identification		
+- ⌛ Translation		
+- ⌛ Smart Reply		
+- ⌛ AutoML model inference		
+- ⌛ Custom model inference
+  
+# How It Works
+ Using an ML Vision Detector 
+    Create a FirebaseVisionImage object from your image. To create a FirebaseVisionImage from an image File object:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+    final File imageFile = getImageFile();
+    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(imageFile);
+    
+ Create an instance of a detector. 
+ 
+    final BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
+    final ImageLabeler cloudLabeler = FirebaseVision.instance.cloudImageLabeler();
+    final FaceDetector faceDetector = FirebaseVision.instance.faceDetector();
+    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
+    final TextRecognizer textRecognizer = FirebaseVision.instance.textRecognizer();
+    
+  You can also configure all detectors, except TextRecognizer, with desired options.
+  
+    final ImageLabeler labeler = FirebaseVision.instance.imageLabler(
+    ImageLabelerOptions(confidenceThreshold: 0.75),
+    );
