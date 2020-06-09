@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 class AddWallpaperScreen extends StatefulWidget {
   @override
@@ -11,9 +15,16 @@ class AddWallpaperScreen extends StatefulWidget {
 
 class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
   File _image;
+  bool isUploading = false;
+  bool uploadComplete = false;
 
   final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
   List<ImageLabel> detectedLabel;
+
+  //Firebase References
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final Firestore _db = Firestore.instance;
 
   @override
   void dispose() {
@@ -26,7 +37,7 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Wallpaper'),
+        title: Text('Image Object Detection'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -45,26 +56,21 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
                             'assets/images/placeholder-upload-img.png'),
                       ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 12.0, bottom: 12, left: 8, right: 8),
-                child: Text("Click on the image above to upload your image"),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(
+              //       top: 12.0, bottom: 12, left: 8, right: 8),
+              //   child: Text("Click on the image above to upload your image"),
+              // ),
               SizedBox(
-                height: 20,
+                height: 5,
               ),
               Container(
-                decoration: BoxDecoration(color: Colors.grey[800], boxShadow: [
-                  BoxShadow(color: Colors.black, spreadRadius: 1)
-                ]),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text("Objects in the Image"),
-                      Text("Confidence"),
-                    ],
+                  child: Text(
+                    "Objects in the Image",
+                    style: TextStyle(),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
@@ -72,31 +78,28 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
                   ? Wrap(
                       spacing: 5,
                       children: detectedLabel.map((label) {
-                        return Container(
-                          decoration: BoxDecoration(
-                              color: Colors.grey[900],
-                              boxShadow: [
-                                BoxShadow(color: Colors.black, spreadRadius: 1)
-                              ]),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 12.0, right: 12.0, top: 4, bottom: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Chip(
-                                  label: Text(label.text),
-                                ),
-                                Container(
-                                  child: Text("${label.confidence}"),
-                                ),
-                              ],
-                            ),
-                          ),
+                        return Chip(
+                          label: Text(label.text),
                         );
                       }).toList(),
                     )
                   : Container(),
+              SizedBox(
+                height: 40,
+              ),
+
+              if (isUploading) ...[
+                Text("Image is uploading...."),
+              ],
+              if (uploadComplete) ...[
+                Text("Image is Uploaded!"),
+              ],
+              RaisedButton(
+                onPressed: () {
+                  _uploadImage();
+                },
+                child: Text("Upload Image"),
+              ),
             ],
           ),
         ),
@@ -116,8 +119,64 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
     //   print("${label.text} ----------- [${label.confidence}]");
     // }
     setState(() {
-      detectedLabel = labels;
+      detectedLabel = labels.reversed.toList();
       _image = image;
     });
+  }
+
+  void _uploadImage() async {
+    if (_image != null) {
+      String fileName =
+          path.basename(_image.path); // Getting the file name of the image
+
+      // Getting the current user ID
+      FirebaseUser _currentUser = await _auth.currentUser();
+      String uid = _currentUser.uid;
+
+      // Upload the image to the firebase Storage
+      StorageUploadTask task = _storage
+          .ref()
+          .child("Wallpapers")
+          .child(uid)
+          .child(fileName)
+          .putFile(_image);
+
+      // Get the uplaoded image data
+      task.events.listen((e) {
+        if (e.type == StorageTaskEventType.progress) {
+          setState(() {
+            isUploading = true;
+          });
+        }
+        if (e.type == StorageTaskEventType.success) {
+          setState(() {
+            uploadComplete = true;
+            isUploading = false;
+          });
+          e.snapshot.ref.getDownloadURL().then((imageUrl) {
+            //gets the image URL
+            Navigator.of(context).pop();
+          });
+        }
+      });
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text("Please select an image to upload..."),
+            actions: <Widget>[
+              RaisedButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: Text("Okay"),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }
