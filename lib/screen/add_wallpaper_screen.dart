@@ -20,6 +20,7 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
 
   final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
   List<ImageLabel> detectedLabel;
+  var labelsInString = [];
 
   //Firebase References
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -108,10 +109,15 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
   }
 
   void _loadImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 30);
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(image);
 
     List<ImageLabel> labels = await labeler.processImage(visionImage);
+
+    for (var l in labels) {
+      labelsInString.add(l.text);
+    }
 
     // //Print out the labels
     // print('Objects in the image ------------ Confidence');
@@ -155,6 +161,12 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
           });
           e.snapshot.ref.getDownloadURL().then((imageUrl) {
             //gets the image URL
+            _db.collection("Wallpapers").add({
+              "url": imageUrl,
+              "date": DateTime.now(),
+              "uploaded_by": uid,
+              "tags": labelsInString,
+            });
             Navigator.of(context).pop();
           });
         }
