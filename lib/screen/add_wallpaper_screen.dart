@@ -15,12 +15,12 @@ class AddWallpaperScreen extends StatefulWidget {
 
 class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
   File _image;
-  bool isUploading = false;
-  bool uploadComplete = false;
+  bool _isUploading = false;
+  bool _uploadComplete = false;
 
   final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
   List<ImageLabel> detectedLabel;
-  var labelsInString = [];
+  List<String> labelsInString = [];
 
   //Firebase References
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -89,12 +89,15 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
                 height: 40,
               ),
 
-              if (isUploading) ...[
+              if (_isUploading) ...[
                 Text("Image is uploading...."),
               ],
-              if (uploadComplete) ...[
+              if (_uploadComplete) ...[
                 Text("Image is Uploaded!"),
               ],
+              SizedBox(
+                height: 40,
+              ),
               RaisedButton(
                 onPressed: () {
                   _uploadImage();
@@ -115,15 +118,10 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
 
     List<ImageLabel> labels = await labeler.processImage(visionImage);
 
+    labelsInString = [];
     for (var l in labels) {
       labelsInString.add(l.text);
     }
-
-    // //Print out the labels
-    // print('Objects in the image ------------ Confidence');
-    // for (var label in labels) {
-    //   print("${label.text} ----------- [${label.confidence}]");
-    // }
     setState(() {
       detectedLabel = labels.reversed.toList();
       _image = image;
@@ -134,7 +132,7 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
     if (_image != null) {
       String fileName =
           path.basename(_image.path); // Getting the file name of the image
-
+      print(fileName);
       // Getting the current user ID
       FirebaseUser _currentUser = await _auth.currentUser();
       String uid = _currentUser.uid;
@@ -147,30 +145,40 @@ class _AddWallpaperScreenState extends State<AddWallpaperScreen> {
           .child(fileName)
           .putFile(_image);
 
-      // Get the uplaoded image data
-      task.events.listen((e) {
-        if (e.type == StorageTaskEventType.progress) {
-          setState(() {
-            isUploading = true;
-          });
-        }
-        if (e.type == StorageTaskEventType.success) {
-          setState(() {
-            uploadComplete = true;
-            isUploading = false;
-          });
-          e.snapshot.ref.getDownloadURL().then((imageUrl) {
-            //gets the image URL
-            _db.collection("Wallpapers").add({
-              "url": imageUrl,
-              "date": DateTime.now(),
-              "uploaded_by": uid,
-              "tags": labelsInString,
-            });
-            Navigator.of(context).pop();
-          });
-        }
+      setState(() {
+        _isUploading = true;
       });
+      StorageTaskSnapshot storageSnap = await task.onComplete;
+      String downloadUrl = await storageSnap.ref.getDownloadURL();
+      setState(() {
+        _isUploading = false;
+        _uploadComplete = true;
+      });
+      print(downloadUrl);
+      // Get the uplaoded image data
+      // task.events.listen((e) {
+      //   if (e.type == StorageTaskEventType.progress) {
+      //     setState(() {
+      //       _isUploading = true;
+      //     });
+      //   }
+      //   if (e.type == StorageTaskEventType.success) {
+      //     e.snapshot.ref.getDownloadURL().then((imageUrl) {
+      //       //gets the image URL
+      //       _db.collection("Wallpapers").add({
+      //         "url": imageUrl,
+      //         "date": DateTime.now(),
+      //         "uploaded_by": uid,
+      //         "tags": labelsInString,
+      //       });
+      //       setState(() {
+      //         _uploadComplete = true;
+      //         _isUploading = false;
+      //       });
+      //       Navigator.of(context).pop();
+      //     });
+      //   }
+      // });
     } else {
       showDialog(
         context: context,
