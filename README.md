@@ -2,6 +2,8 @@
 
 Simple App to demonstrate the use of Mobile SDK ML KIT that brings Google's machine learning expertise to Android and iOS apps in a powerful yet easy-to-use package. Whether you're new or experienced in machine learning, you can implement the functionality you need in just a few lines of code.
 
+![alt text](https://lh3.googleusercontent.com/pw/ACtC-3ffvLb5CyVxwVbtObdZs98xlZCOpPpiwMuYCUQiGcszkNNTkgUpSN_E1qHxeDlFhffn71gyiJdaQHHhNq7VVNbYfodZPItSBzNDEqdtTSq55rsJuc6YKvw0jLtv4hXvGhSJfgF8SSLNVCRUfJ6hTuyA=w546-h969-no?authuser=0 "Screen")
+
 ## Work in progress
 
 The features :
